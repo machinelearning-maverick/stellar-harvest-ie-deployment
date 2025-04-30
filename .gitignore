@@ -1,0 +1,33 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Pytest
+.pytest_cache/
+
+# Environment files
+.env
+.env.*.local
+
+# Logs
+*.log
+
+# Docker Compose override files
+docker-compose.override.yml

@@ -1,0 +1,40 @@
+# Don’t send git history or config
+.git
+.gitignore
+
+# Local env files
+.env
+.env.*
+
+# Python artifacts
+__pycache__
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Distribution artifacts
+build/
+dist/
+*.egg-info/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Test cache and logs
+.pytest_cache/
+*.log
+
+# Compose and Kubernetes manifests (unless you need them in image)
+docker-compose.yml
+k8s/
+deployment/scripts/
+
+# README, docs, examples (optional to include)
+README.md
