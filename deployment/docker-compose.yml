@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: stellar-harvest-ie-deployment_zookeeper-1
+    restart: always
+    ports:
+      - "2181:2181"                    # client port
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+    volumes:
+      - stellar-harvest-ie_zk-data:/var/lib/zookeeper/data
+      - stellar-harvest-ie_zk-log:/var/lib/zookeeper/log
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: stellar-harvest-ie-deployment_kafka-1
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"                    # broker port for clients
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+    volumes:
+      - stellar-harvest-ie_kafka-data:/var/lib/kafka/data
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: stellar-harvest-ie-deployment_kafkadrop-1
+    depends_on:
+      - kafka
+      - zookeeper
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9092"
+
+volumes:
+  stellar-harvest-ie_zk-data:
+  stellar-harvest-ie_zk-log:
+  stellar-harvest-ie_kafka-data:
