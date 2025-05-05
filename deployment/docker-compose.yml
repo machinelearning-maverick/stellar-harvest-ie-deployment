@@ -46,6 +46,16 @@ services:
     environment:
       KAFKA_BROKERCONNECT: "kafka:9092"
 
+  # swcp-scheduler:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.scheduler
+  #   depends_on:
+  #     - kafka
+  #   environment:
+  #     KAFKA_URI: kafka:9092
+  #     KAFKA_TOPIC_SWPC: raw-space-weather
+
 volumes:
   stellar-harvest-ie_zk-data:
   stellar-harvest-ie_zk-log:

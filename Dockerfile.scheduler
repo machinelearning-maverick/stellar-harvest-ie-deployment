@@ -1,0 +1,7 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install stellar-harvest-ie-config
+
+CMD [ "python", "run_swpc_scheduler.py" ]
