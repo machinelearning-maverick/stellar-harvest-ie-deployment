@@ -46,10 +46,12 @@ services:
     environment:
       KAFKA_BROKERCONNECT: "kafka:9092"
 
-  swcp-scheduler:
+  swpc-scheduler:
     build:
-      context: .
+      context: ../
       dockerfile: Dockerfile.scheduler
+      args:
+        DEVPI_HASEK_DEV_URL: ${DEVPI_HASEK_DEV_URL}
     depends_on:
       - kafka
     environment:

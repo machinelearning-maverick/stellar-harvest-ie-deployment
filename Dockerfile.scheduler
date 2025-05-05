@@ -2,8 +2,12 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY run_swpc_scheduler .
+ARG DEVPI_HASEK_DEV_URL
+ENV PIP_INDEX_URL=$DEVPI_HASEK_DEV_URL
 
+COPY src/stellar_harvest_ie_deployment/run_swpc_scheduler.py .
+
+# RUN pip install --no-cache-dir --index-url $DEVPI_HASEK_DEV_URL \
 RUN pip install --no-cache-dir \
     stellar-harvest-ie-config \
     stellar-harvest-ie-models \
