@@ -1,0 +1,6 @@
+stellar-harvest-ie-config
+stellar-harvest-ie-models
+stellar-harvest-ie-stream
+stellar-harvest-ie-producers
+kafka-python
+schedule

@@ -2,6 +2,17 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN pip install stellar-harvest-ie-config
+COPY run_swpc_scheduler .
+
+RUN pip install --no-cache-dir \
+    stellar-harvest-ie-config \
+    stellar-harvest-ie-models \
+    stellar-harvest-ie-stream \
+    stellar-harvest-ie-producers \
+    kafka-python \
+    schedule
+
+ENV KAFKA_URI="kafka:9092" \
+    KAFKA_TOPIC_SWPC="raw-space-weather"
 
 CMD [ "python", "run_swpc_scheduler.py" ]
