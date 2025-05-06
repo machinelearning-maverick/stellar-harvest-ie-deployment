@@ -17,6 +17,6 @@ RUN pip install --no-cache-dir \
     schedule
 
 ENV KAFKA_URI="kafka:9092" \
-    KAFKA_TOPIC_SWPC="raw-space-weather"
+    KAFKA_TOPIC_SWPC="stellar-harvest-ie-raw-space-weather"
 
 CMD [ "python", "run_swpc_scheduler.py" ]
