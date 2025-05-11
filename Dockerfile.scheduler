@@ -7,8 +7,7 @@ ENV PIP_INDEX_URL=$DEVPI_HASEK_DEV_URL
 
 COPY src/stellar_harvest_ie_deployment/run_swpc_scheduler.py .
 
-# RUN pip install --no-cache-dir --index-url $DEVPI_HASEK_DEV_URL \
-RUN pip install --no-cache-dir \
+RUN pip install --upgrade --no-cache-dir \
     stellar-harvest-ie-config \
     stellar-harvest-ie-models \
     stellar-harvest-ie-producers \
@@ -17,6 +16,7 @@ RUN pip install --no-cache-dir \
     schedule
 
 ENV KAFKA_URI="kafka:9092" \
-    KAFKA_TOPIC_SWPC="stellar-harvest-ie-raw-space-weather"
+    KAFKA_TOPIC_SWPC="stellar-harvest-ie-raw-space-weather" \
+    SCHEDULE_EVERY_MINUTES=15
 
 CMD [ "python", "run_swpc_scheduler.py" ]
