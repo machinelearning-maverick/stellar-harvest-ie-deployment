@@ -55,8 +55,8 @@ services:
     depends_on:
       - kafka
     environment:
-      KAFKA_URI: kafka:9092
-      KAFKA_TOPIC_SWPC: raw-space-weather
+      KAFKA_URI: ${KAFKA_URI}
+      KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
     restart: always
 
 volumes:

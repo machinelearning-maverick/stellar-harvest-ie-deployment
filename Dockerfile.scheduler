@@ -11,8 +11,8 @@ COPY src/stellar_harvest_ie_deployment/run_swpc_scheduler.py .
 RUN pip install --no-cache-dir \
     stellar-harvest-ie-config \
     stellar-harvest-ie-models \
-    stellar-harvest-ie-stream \
     stellar-harvest-ie-producers \
+    stellar-harvest-ie-stream \
     kafka-python \
     schedule
 
