@@ -39,7 +39,7 @@ def job():
 def main():
     kafka_uri = os.getenv("KAFKA_URI")
     kafka_topic = os.getenv("KAFKA_TOPIC_SWPC")
-    schedule_every_minutes = os.getenv("SCHEDULE_EVERY_MINUTES")
+    schedule_every_minutes = int(os.getenv("SCHEDULE_EVERY_MINUTES"))
 
     msg = f"SWPC scheduler starting; broker: {kafka_uri}, topic: {kafka_topic}"
     logger.info(msg)
