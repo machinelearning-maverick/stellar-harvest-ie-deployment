@@ -46,6 +46,19 @@ services:
     environment:
       KAFKA_BROKERCONNECT: "kafka:9092"
 
+  swpc-scheduler:
+    build:
+      context: ../
+      dockerfile: Dockerfile.scheduler
+      args:
+        DEVPI_HASEK_DEV_URL: ${DEVPI_HASEK_DEV_URL}
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_URI: ${KAFKA_URI}
+      KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
+    restart: always
+
 volumes:
   stellar-harvest-ie_zk-data:
   stellar-harvest-ie_zk-log:
