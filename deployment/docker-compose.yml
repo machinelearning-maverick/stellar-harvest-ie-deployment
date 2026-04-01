@@ -35,6 +35,10 @@ services:
     volumes:
       - stellar-harvest-ie_kafka-data:/var/lib/kafka/data
 
+  ui:
+    build:
+      context: ../stellar_harvest_ie_ui
+
   kafdrop:
     image: obsidiandynamics/kafdrop
     container_name: stellar-harvest-ie-deployment_kafkadrop-1
