@@ -5,6 +5,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEPLOY_DIR="$SCRIPT_DIR/deployment"
 
+export PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
 echo "▸ Starting Kafka stack via Docker Compose…"
 cd "$DEPLOY_DIR"
 docker-compose up -d

@@ -37,7 +37,7 @@ services:
 
   ui:
     build:
-      context: ../stellar_harvest_ie_ui
+      context: ${PROJECT_ROOT}/stellar-harvest-ie-ui
 
   kafdrop:
     image: obsidiandynamics/kafdrop
@@ -52,7 +52,7 @@ services:
 
   swpc-scheduler:
     build:
-      context: ../
+      context: ${PROJECT_ROOT}/stellar-harvest-ie-deployment
       dockerfile: Dockerfile.scheduler
       args:
         DEVPI_HASEK_DEV_URL: ${DEVPI_HASEK_DEV_URL}
