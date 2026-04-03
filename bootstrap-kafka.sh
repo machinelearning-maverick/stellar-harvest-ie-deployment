@@ -9,7 +9,7 @@ export PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 echo "▸ Starting Kafka stack via Docker Compose…"
 cd "$DEPLOY_DIR"
-docker-compose up -d
+docker compose up -d
 
 echo "▸ Waiting for Kafka to become ready…"
 # crude wait; replace with a proper healthcheck loop if you like
