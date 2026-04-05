@@ -1,6 +1,6 @@
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: confluentinc/cp-zookeeper:7.5.0
     container_name: stellar-harvest-ie-deployment_zookeeper-1
     restart: always
     ports:
@@ -14,7 +14,7 @@ services:
       - stellar-harvest-ie_zk-log:/var/lib/zookeeper/log
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.5.0
     container_name: stellar-harvest-ie-deployment_kafka-1
     restart: always
     depends_on:
@@ -39,6 +39,8 @@ services:
       dockerfile: Dockerfile.ui
       secrets:
         - env
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
     secrets:
       - env
 
