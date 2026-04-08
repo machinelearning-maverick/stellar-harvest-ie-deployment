@@ -2,6 +2,7 @@ import os
 import time
 import logging
 import schedule
+from dotenv import load_dotenv
 
 from stellar_harvest_ie_config.logging_config import setup_logging
 
@@ -36,12 +37,21 @@ def job():
             logger.error("Failed...", exc_info=True)
 
 
-def main():
-    kafka_uri = os.getenv("KAFKA_URI")
-    kafka_topic = os.getenv("KAFKA_TOPIC_SWPC")
-    schedule_every_minutes = int(os.getenv("SCHEDULE_EVERY_MINUTES"))
+def main(env_path="/run/secrets/env"):
+    load_dotenv(env_path)
 
-    msg = f"SWPC scheduler starting; broker: {kafka_uri}, topic: {kafka_topic}"
+    try:
+        kafka_uri = os.environ["KAFKA_URI"]
+        kafka_topic = os.environ["KAFKA_TOPIC_SWPC"]
+        schedule_every_minutes = int(os.environ["SCHEDULE_EVERY_MINUTES"])
+    except KeyError as e:
+        logger.error(f"Missing required environment variable: {e}")
+        return
+    except ValueError as e:
+        logger.error(f"Invalid value for environment variable: {e}")
+        return
+
+    msg = f"SWPC scheduler starting; broker: {kafka_uri}, topic: {kafka_topic}, every(min): {schedule_every_minutes}"
     logger.info(msg)
 
     schedule.every(schedule_every_minutes).minutes.do(job)
