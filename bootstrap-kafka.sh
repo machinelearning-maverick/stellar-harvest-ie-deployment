@@ -8,6 +8,8 @@ export PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 echo "Starting Kafka stack via Docker Compose…"
 cd "$DEPLOY_DIR"
+docker compose build producer-swpc-scheduler
+docker compose build consumer-swpc
 docker compose up -d
 
 echo "Waiting for Kafka to become healthy…"

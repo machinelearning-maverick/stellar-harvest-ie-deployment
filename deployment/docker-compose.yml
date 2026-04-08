@@ -73,7 +73,8 @@ services:
       extra_hosts:
         - "host.docker.internal:host-gateway"
     depends_on:
-      - kafka
+      kafka-setup:
+        condition: service_completed_successfully
     secrets:
       - env
     environment:

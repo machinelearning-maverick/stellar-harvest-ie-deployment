@@ -4,8 +4,6 @@ ARG DEVPI_HASEK_DEV_URL
 
 WORKDIR /app
 
-COPY src/stellar_harvest_ie_deployment/run_swpc_scheduler.py .
-
 RUN pip install --upgrade --no-cache-dir \
     --extra-index-url ${DEVPI_HASEK_DEV_URL} \
     --trusted-host host.docker.internal \
@@ -16,5 +14,7 @@ RUN pip install --upgrade --no-cache-dir \
     kafka-python \
     schedule \
     python-dotenv
+
+COPY src/stellar_harvest_ie_deployment/run_swpc_scheduler.py .
 
 CMD [ "python", "run_swpc_scheduler.py" ]
