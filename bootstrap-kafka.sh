@@ -7,16 +7,17 @@ DEPLOY_DIR="$SCRIPT_DIR/deployment"
 
 export PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-echo "▸ Starting Kafka stack via Docker Compose…"
+echo "Starting Kafka stack via Docker Compose…"
 cd "$DEPLOY_DIR"
 docker compose up -d
 
-echo "▸ Waiting for Kafka to become ready…"
+echo "Waiting for Kafka to become ready…"
 # crude wait; replace with a proper healthcheck loop if you like
 sleep 5
 
-echo "▸ Creating topic(s)…"
+echo "Creating topic(s)…"
 # invoke the create-topic script from its location
 "$DEPLOY_DIR/scripts/create-topic.sh"
 
 echo "Kafka is up and your topic(s) are ready."
+echo "Kafdrop - Kafka Web UI available at http://localhost:9000/"

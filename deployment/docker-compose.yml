@@ -70,6 +70,7 @@ services:
     environment:
       KAFKA_URI: ${KAFKA_URI}
       KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
+      SCHEDULE_EVERY_MINUTES: ${SCHEDULE_EVERY_MINUTES}
     restart: always
 
 volumes:
