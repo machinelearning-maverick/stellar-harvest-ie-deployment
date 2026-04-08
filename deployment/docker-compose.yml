@@ -32,6 +32,24 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
     volumes:
       - stellar-harvest-ie_kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:$$(echo $$KAFKA_LISTENERS | grep -oE '[0-9]+$$') --list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  kafka-setup:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_URI: ${KAFKA_URI}
+      KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
+    entrypoint: ["/bin/bash", "-c"]
+    command: "kafka-topics --create --if-not-exists --bootstrap-server $$KAFKA_URI --topic $$KAFKA_TOPIC_SWPC --partitions 1 --replication-factor 1"
+    restart: on-failure
 
   kafdrop:
     image: obsidiandynamics/kafdrop
@@ -44,7 +62,7 @@ services:
     environment:
       KAFKA_BROKERCONNECT: "kafka:9092"
 
-  swpc-scheduler:
+  producer-swpc-scheduler:
     build:
       context: ${PROJECT_ROOT}/stellar-harvest-ie-deployment
       dockerfile: Dockerfile.scheduler
@@ -52,6 +70,8 @@ services:
         DEVPI_HASEK_DEV_URL: ${DEVPI_HASEK_DEV_URL}
       secrets:
         - env
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
     depends_on:
       - kafka
     secrets:
@@ -60,6 +80,21 @@ services:
       KAFKA_URI: ${KAFKA_URI}
       KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
       SCHEDULE_EVERY_MINUTES: ${SCHEDULE_EVERY_MINUTES}
+    restart: always
+
+  consumer-swpc:
+    build:
+      context: ${PROJECT_ROOT}/stellar-harvest-ie-consumers
+      dockerfile: Dockerfile.consumers
+      secrets:
+        - env
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+    depends_on:
+      kafka-setup:
+        condition: service_completed_successfully
+    secrets:
+      - env
     restart: always
 
   ui:

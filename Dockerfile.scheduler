@@ -1,15 +1,20 @@
 FROM python:3.11-slim
 
+ARG DEVPI_HASEK_DEV_URL
+
 WORKDIR /app
 
 COPY src/stellar_harvest_ie_deployment/run_swpc_scheduler.py .
 
 RUN pip install --upgrade --no-cache-dir \
+    --extra-index-url ${DEVPI_HASEK_DEV_URL} \
+    --trusted-host host.docker.internal \
     stellar-harvest-ie-config \
     stellar-harvest-ie-models \
     stellar-harvest-ie-producers \
     stellar-harvest-ie-stream \
     kafka-python \
-    schedule
+    schedule \
+    python-dotenv
 
 CMD [ "python", "run_swpc_scheduler.py" ]
