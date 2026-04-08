@@ -33,17 +33,6 @@ services:
     volumes:
       - stellar-harvest-ie_kafka-data:/var/lib/kafka/data
 
-  ui:
-    build:
-      context: ${PROJECT_ROOT}/stellar-harvest-ie-ui
-      dockerfile: Dockerfile.ui
-      secrets:
-        - env
-      extra_hosts:
-        - "host.docker.internal:host-gateway"
-    secrets:
-      - env
-
   kafdrop:
     image: obsidiandynamics/kafdrop
     container_name: stellar-harvest-ie-deployment_kafkadrop-1
@@ -72,6 +61,17 @@ services:
       KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
       SCHEDULE_EVERY_MINUTES: ${SCHEDULE_EVERY_MINUTES}
     restart: always
+
+  ui:
+    build:
+      context: ${PROJECT_ROOT}/stellar-harvest-ie-ui
+      dockerfile: Dockerfile.ui
+      secrets:
+        - env
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+    secrets:
+      - env
 
 volumes:
   stellar-harvest-ie_zk-data:
