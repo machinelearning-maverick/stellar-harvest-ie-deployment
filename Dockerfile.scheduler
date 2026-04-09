@@ -1,19 +1,22 @@
 FROM python:3.11-slim
-
 WORKDIR /app
+
+RUN --mount=type=secret,id=env \
+    set -o allexport && \
+    . /run/secrets/env && \
+    set +o allexport && \
+    pip install --upgrade --no-cache-dir \
+      --index-url https://pypi.org/simple \
+      --extra-index-url "$DEVPI_HASEK_DEV_URL" \
+      --trusted-host host.docker.internal \
+      stellar-harvest-ie-config \
+      stellar-harvest-ie-models \
+      stellar-harvest-ie-producers \
+      stellar-harvest-ie-stream \
+      kafka-python \
+      schedule \
+      python-dotenv
 
 COPY src/stellar_harvest_ie_deployment/run_swpc_scheduler.py .
 
-RUN pip install --upgrade --no-cache-dir \
-    stellar-harvest-ie-config \
-    stellar-harvest-ie-models \
-    stellar-harvest-ie-producers \
-    stellar-harvest-ie-stream \
-    kafka-python \
-    schedule
-
-ENV KAFKA_URI="kafka:9092" \
-    KAFKA_TOPIC_SWPC="stellar-harvest-ie-raw-space-weather" \
-    SCHEDULE_EVERY_MINUTES=15
-
-CMD [ "python", "run_swpc_scheduler.py" ]
+CMD ["python", "run_swpc_scheduler.py"]

@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: confluentinc/cp-zookeeper:7.5.0
     container_name: stellar-harvest-ie-deployment_zookeeper-1
     restart: always
     ports:
@@ -16,7 +14,7 @@ services:
       - stellar-harvest-ie_zk-log:/var/lib/zookeeper/log
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.5.0
     container_name: stellar-harvest-ie-deployment_kafka-1
     restart: always
     depends_on:
@@ -34,10 +32,12 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
     volumes:
       - stellar-harvest-ie_kafka-data:/var/lib/kafka/data
-
-  ui:
-    build:
-      context: ../stellar_harvest_ie_ui
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
 
   kafdrop:
     image: obsidiandynamics/kafdrop
@@ -50,20 +50,58 @@ services:
     environment:
       KAFKA_BROKERCONNECT: "kafka:9092"
 
-  swpc-scheduler:
+  producer-swpc-scheduler:
     build:
-      context: ../
+      context: ${PROJECT_ROOT}/stellar-harvest-ie-deployment
       dockerfile: Dockerfile.scheduler
       args:
         DEVPI_HASEK_DEV_URL: ${DEVPI_HASEK_DEV_URL}
+      secrets:
+        - env
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
+    secrets:
+      - env
     environment:
       KAFKA_URI: ${KAFKA_URI}
       KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
+      SCHEDULE_EVERY_MINUTES: ${SCHEDULE_EVERY_MINUTES}
     restart: always
+
+  consumer-swpc:
+    build:
+      context: ${PROJECT_ROOT}/stellar-harvest-ie-consumers
+      dockerfile: Dockerfile.consumers
+      secrets:
+        - env
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    secrets:
+      - env
+    restart: always
+
+  ui:
+    build:
+      context: ${PROJECT_ROOT}/stellar-harvest-ie-ui
+      dockerfile: Dockerfile.ui
+      secrets:
+        - env
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+    secrets:
+      - env
 
 volumes:
   stellar-harvest-ie_zk-data:
   stellar-harvest-ie_zk-log:
   stellar-harvest-ie_kafka-data:
+
+secrets:
+  env:
+    file: ../.env

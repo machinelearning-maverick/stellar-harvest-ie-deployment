@@ -5,16 +5,27 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEPLOY_DIR="$SCRIPT_DIR/deployment"
 
-echo "▸ Starting Kafka stack via Docker Compose…"
+export PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+echo "Starting Kafka stack via Docker Compose..."
 cd "$DEPLOY_DIR"
-docker-compose up -d
+docker compose up -d --build
 
-echo "▸ Waiting for Kafka to become ready…"
-# crude wait; replace with a proper healthcheck loop if you like
-sleep 5
+echo "Waiting for Kafka to become healthy..."
+TIMEOUT=60
+until docker compose ps kafka | grep -q "(healthy)"; do
+  sleep 5
+  TIMEOUT=$((TIMEOUT - 5))
+  if [ "$TIMEOUT" -le 0 ]; then
+    echo "Timed out waiting for Kafka to become healthy" >&2
+    exit 1
+  fi
+  echo "  still waiting... (${TIMEOUT}s remaining)"
+done
 
-echo "▸ Creating topic(s)…"
+echo "Kafka is healthy. Creating topic(s)..."
 # invoke the create-topic script from its location
 "$DEPLOY_DIR/scripts/create-topic.sh"
 
 echo "Kafka is up and your topic(s) are ready."
+echo "Kafdrop - Kafka Web UI available at http://localhost:9000/"
