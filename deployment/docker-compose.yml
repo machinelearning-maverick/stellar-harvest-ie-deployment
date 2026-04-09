@@ -39,18 +39,6 @@ services:
       retries: 5
       start_period: 15s
 
-  kafka-setup:
-    image: confluentinc/cp-kafka:7.5.0
-    depends_on:
-      kafka:
-        condition: service_healthy
-    environment:
-      KAFKA_URI: ${KAFKA_URI}
-      KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
-    entrypoint: ["/bin/bash", "-c"]
-    command: "kafka-topics --create --if-not-exists --bootstrap-server $$KAFKA_URI --topic $$KAFKA_TOPIC_SWPC --partitions 1 --replication-factor 1"
-    restart: on-failure
-
   kafdrop:
     image: obsidiandynamics/kafdrop
     container_name: stellar-harvest-ie-deployment_kafkadrop-1
@@ -73,8 +61,8 @@ services:
       extra_hosts:
         - "host.docker.internal:host-gateway"
     depends_on:
-      kafka-setup:
-        condition: service_completed_successfully
+      kafka:
+        condition: service_healthy
     secrets:
       - env
     environment:
@@ -92,8 +80,8 @@ services:
       extra_hosts:
         - "host.docker.internal:host-gateway"
     depends_on:
-      kafka-setup:
-        condition: service_completed_successfully
+      kafka:
+        condition: service_healthy
     secrets:
       - env
     restart: always

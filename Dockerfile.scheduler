@@ -1,20 +1,22 @@
 FROM python:3.11-slim
-
-ARG DEVPI_HASEK_DEV_URL
-
 WORKDIR /app
 
-RUN pip install --upgrade --no-cache-dir \
-    --extra-index-url ${DEVPI_HASEK_DEV_URL} \
-    --trusted-host host.docker.internal \
-    stellar-harvest-ie-config \
-    stellar-harvest-ie-models \
-    stellar-harvest-ie-producers \
-    stellar-harvest-ie-stream \
-    kafka-python \
-    schedule \
-    python-dotenv
+RUN --mount=type=secret,id=env \
+    set -o allexport && \
+    . /run/secrets/env && \
+    set +o allexport && \
+    pip install --upgrade --no-cache-dir \
+      --index-url https://pypi.org/simple \
+      --extra-index-url "$DEVPI_HASEK_DEV_URL" \
+      --trusted-host host.docker.internal \
+      stellar-harvest-ie-config \
+      stellar-harvest-ie-models \
+      stellar-harvest-ie-producers \
+      stellar-harvest-ie-stream \
+      kafka-python \
+      schedule \
+      python-dotenv
 
 COPY src/stellar_harvest_ie_deployment/run_swpc_scheduler.py .
 
-CMD [ "python", "run_swpc_scheduler.py" ]
+CMD ["python", "run_swpc_scheduler.py"]

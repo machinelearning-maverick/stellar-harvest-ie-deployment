@@ -8,9 +8,7 @@ export PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 echo "Starting Kafka stack via Docker Compose…"
 cd "$DEPLOY_DIR"
-docker compose build producer-swpc-scheduler
-docker compose build consumer-swpc
-docker compose up -d
+docker compose up -d --build
 
 echo "Waiting for Kafka to become healthy…"
 TIMEOUT=60
@@ -24,5 +22,7 @@ until docker compose ps kafka | grep -q "(healthy)"; do
   echo "  still waiting… (${TIMEOUT}s remaining)"
 done
 
-echo "Kafka is healthy. Topic(s) will be created by kafka-setup container."
+echo "Kafka is healthy. Creating topic(s)…"
+bash "$SCRIPT_DIR/deployment/scripts/create-topic.sh"
+
 echo "Kafdrop - Kafka Web UI available at http://localhost:9000/"
