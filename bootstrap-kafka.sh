@@ -2,10 +2,11 @@
 set -euo pipefail
 
 # Determine repo-root and deployment dir
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DEPLOY_DIR="$SCRIPT_DIR/deployment"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEPLOY_DIR="$ROOT_DIR/deployment"
+SCRIPTS_DIR="$DEPLOY_DIR/scripts"
 
-export PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+export PROJECT_ROOT="$(dirname "$ROOT_DIR")"
 
 echo "Starting Kafka stack via Docker Compose..."
 cd "$DEPLOY_DIR"
@@ -25,7 +26,7 @@ done
 
 echo "Kafka is healthy. Creating topic(s)..."
 # invoke the create-topic script from its location
-"$DEPLOY_DIR/scripts/create-topic.sh"
+"$SCRIPTS_DIR/create-topic.sh"
 
 echo "Kafka is up and your topic(s) are ready."
 echo "Kafdrop - Kafka Web UI available at http://localhost:9000/"

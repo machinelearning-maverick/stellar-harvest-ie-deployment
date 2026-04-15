@@ -20,12 +20,14 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"                    # broker port for clients
+      - "9092:9092"                    # internal broker port (container-to-container)
+      - "9093:9093"                    # external broker port (host / e2e tests)
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -49,6 +51,40 @@ services:
       - "9000:9000"
     environment:
       KAFKA_BROKERCONNECT: "kafka:9092"
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: stellar-harvest-ie-deployment_postgres-1
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - stellar-harvest-ie_postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  store:
+      build:
+        context: ${PROJECT_ROOT}/stellar-harvest-ie-store
+        dockerfile: Dockerfile.store
+        secrets:
+          - env
+        extra_hosts:
+          - "host.docker.internal:host-gateway"
+      depends_on:
+        postgres:
+          condition: service_healthy
+      secrets:
+        - env
+      restart: on-failure
 
   producer-swpc-scheduler:
     build:
@@ -82,8 +118,15 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+      postgres:
+        condition: service_healthy
+      store:
+        condition: service_completed_successfully
     secrets:
       - env
+    environment:
+      KAFKA_URI: ${KAFKA_URI}
+      KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
     restart: always
 
   ui:
@@ -101,6 +144,7 @@ volumes:
   stellar-harvest-ie_zk-data:
   stellar-harvest-ie_zk-log:
   stellar-harvest-ie_kafka-data:
+  stellar-harvest-ie_postgres-data:
 
 secrets:
   env:
