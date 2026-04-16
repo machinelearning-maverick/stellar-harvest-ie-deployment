@@ -10,7 +10,7 @@ export PROJECT_ROOT="$(dirname "$ROOT_DIR")"
 
 echo "Starting Kafka stack via Docker Compose..."
 cd "$DEPLOY_DIR"
-docker compose up -d --build
+docker compose up -d --build --remove-orphans
 
 echo "Waiting for Kafka to become healthy..."
 TIMEOUT=60

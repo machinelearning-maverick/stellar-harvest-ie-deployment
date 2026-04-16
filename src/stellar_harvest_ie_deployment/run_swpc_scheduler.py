@@ -15,7 +15,7 @@ from stellar_harvest_ie_producers.stellar.swpc.producer import (
     publish_latest_planetary_kp_index,
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("stellar_harvest_ie_deployment.run_swpc_scheduler")
 
 
 @log_io()
