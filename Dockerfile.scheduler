@@ -7,14 +7,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Layer 2: internal deps (busts when any pinned version changes)
 ARG SHIE_CONFIG_VERSION
-# ARG SHIE_MODELS_VERSION
-# ARG SHIE_STREAM_VERSION
+ARG SHIE_MODELS_VERSION
+ARG SHIE_STREAM_VERSION
 # ARG SHIE_STORE_VERSION
 ARG SHIE_PRODUCERS_VERSION
 # ARG SHIE_CONSUMERS_VERSION
 
 # Fail loudly if any required version arg is missing
 RUN : "${SHIE_CONFIG_VERSION:?SHIE_CONFIG_VERSION build arg is required}" \
+  && : "${SHIE_MODELS_VERSION:?SHIE_MODELS_VERSION build arg is required}" \
+  && : "${SHIE_STREAM_VERSION:?SHIE_STREAM_VERSION build arg is required}" \
   && : "${SHIE_PRODUCERS_VERSION:?SHIE_PRODUCERS_VERSION build arg is required}"
 
 
@@ -27,6 +29,8 @@ RUN --mount=type=secret,id=env \
       --extra-index-url "$DEVPI_HASEK_DEV_URL" \
       --trusted-host host.docker.internal \
       "stellar-harvest-ie-config==${SHIE_CONFIG_VERSION}" \
+      "stellar-harvest-ie-models==${SHIE_MODELS_VERSION}" \
+      "stellar-harvest-ie-stream==${SHIE_STREAM_VERSION}" \
       "stellar-harvest-ie-producers==${SHIE_PRODUCERS_VERSION}" \
       kafka-python \
       schedule \

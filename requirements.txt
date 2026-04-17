@@ -1,8 +1,13 @@
 python-dotenv
 kafka-python
 schedule
-stellar-harvest-ie-config>=0.1.2
-stellar-harvest-ie-models>=0.3.1
-stellar-harvest-ie-stream>=0.1.2
-stellar-harvest-ie-store>=0.1.2
-stellar-harvest-ie-producers>=0.2.3
+
+# Internal modules live in pyproject.toml 
+# and are installed by the Dockerfile's pinned-version layer.
+# Listing them here would break layer caching.
+# -----
+# stellar-harvest-ie-config>=0.1.2
+# stellar-harvest-ie-models>=0.3.1
+# stellar-harvest-ie-stream>=0.1.2
+# stellar-harvest-ie-store>=0.1.2
+# stellar-harvest-ie-producers>=0.2.3
