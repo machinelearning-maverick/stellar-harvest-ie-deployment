@@ -75,6 +75,10 @@ services:
       build:
         context: ${PROJECT_ROOT}/stellar-harvest-ie-store
         dockerfile: Dockerfile.store
+        args:
+          SHIE_CONFIG_VERSION: ${SHIE_CONFIG_VERSION}
+          SHIE_MODELS_VERSION: ${SHIE_MODELS_VERSION}
+          SHIE_STORE_VERSION: ${SHIE_STORE_VERSION}
         secrets:
           - env
         extra_hosts:
@@ -92,6 +96,10 @@ services:
       dockerfile: Dockerfile.scheduler
       args:
         DEVPI_HASEK_DEV_URL: ${DEVPI_HASEK_DEV_URL}
+        SHIE_CONFIG_VERSION: ${SHIE_CONFIG_VERSION}
+        SHIE_MODELS_VERSION: ${SHIE_MODELS_VERSION}
+        SHIE_STREAM_VERSION: ${SHIE_STREAM_VERSION}
+        SHIE_PRODUCERS_VERSION: ${SHIE_PRODUCERS_VERSION}
       secrets:
         - env
       extra_hosts:
@@ -111,6 +119,11 @@ services:
     build:
       context: ${PROJECT_ROOT}/stellar-harvest-ie-consumers
       dockerfile: Dockerfile.consumers
+      args:
+        SHIE_CONFIG_VERSION: ${SHIE_CONFIG_VERSION}
+        SHIE_MODELS_VERSION: ${SHIE_MODELS_VERSION}
+        SHIE_STREAM_VERSION: ${SHIE_STREAM_VERSION}
+        SHIE_CONSUMERS_VERSION: ${SHIE_CONSUMERS_VERSION}
       secrets:
         - env
       extra_hosts:
@@ -133,6 +146,10 @@ services:
     build:
       context: ${PROJECT_ROOT}/stellar-harvest-ie-ui
       dockerfile: Dockerfile.ui
+      args:
+        SHIE_CONFIG_VERSION: ${SHIE_CONFIG_VERSION}
+        SHIE_MODELS_VERSION: ${SHIE_MODELS_VERSION}
+        SHIE_UI_VERSION: ${SHIE_UI_VERSION}
       secrets:
         - env
       extra_hosts:

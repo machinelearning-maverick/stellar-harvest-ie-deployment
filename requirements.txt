@@ -1,7 +1,8 @@
-stellar-harvest-ie-config
-stellar-harvest-ie-models
-stellar-harvest-ie-stream
-stellar-harvest-ie-producers
 python-dotenv
 kafka-python
 schedule
+stellar-harvest-ie-config>=0.1.2
+stellar-harvest-ie-models>=0.3.1
+stellar-harvest-ie-stream>=0.1.2
+stellar-harvest-ie-store>=0.1.2
+stellar-harvest-ie-producers>=0.2.3
