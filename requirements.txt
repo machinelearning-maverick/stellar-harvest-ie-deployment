@@ -1,6 +1,5 @@
-python-dotenv
-kafka-python
-schedule
+kafka-python>=2.0.2
+python-dotenv>=1.0.0
 
 # Internal modules live in pyproject.toml 
 # and are installed by the Dockerfile's pinned-version layer.
