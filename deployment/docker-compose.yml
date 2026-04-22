@@ -90,10 +90,10 @@ services:
         - env
       restart: on-failure
 
-  producer-swpc-scheduler:
+  producer-swpc:
     build:
-      context: ${PROJECT_ROOT}/stellar-harvest-ie-deployment
-      dockerfile: Dockerfile.scheduler
+      context: ${PROJECT_ROOT}/stellar-harvest-ie-producers
+      dockerfile: Dockerfile.producers
       args:
         DEVPI_HASEK_DEV_URL: ${DEVPI_HASEK_DEV_URL}
         SHIE_CONFIG_VERSION: ${SHIE_CONFIG_VERSION}
