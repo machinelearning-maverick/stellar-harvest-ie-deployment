@@ -143,6 +143,23 @@ services:
       KAFKA_TOPIC_SWPC: ${KAFKA_TOPIC_SWPC}
     restart: always
 
+  pipeline-ml-stellar:
+    build:
+      context: ${PROJECT_ROOT}/stellar-harvest-ie-ml-stellar
+      dockerfile: Dockerfile.mlstellar
+      args:
+        SHIE_ML_STELLAR_VERSION: ${SHIE_ML_STELLAR_VERSION}
+      secrets:
+        - env
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+    depends_on:
+      store:
+        condition: service_completed_successfully
+    secrets:
+      - env
+    restart: unless-stopped
+
   ui:
     build:
       context: ${PROJECT_ROOT}/stellar-harvest-ie-ui
