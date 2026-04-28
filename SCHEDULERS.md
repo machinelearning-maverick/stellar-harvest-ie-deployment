@@ -36,12 +36,12 @@ Retrains the Kp-index classification model. Will register results in
 MLflow once the MLflow service is wired in.
 
 - **Entrypoint:** `sh-classify-train` → `stellar_harvest_ie_ml_stellar.schedulers.classify_train:main`
-- **Cadence:** `SCHEDULE_CLASSIFY_DAY` at `SCHEDULE_CLASSIFY_AT` (env vars,
+- **Cadence:** `SCHEDULE_REGRESSION_DAY` at `SCHEDULE_REGRESSION_AT` (env vars,
   e.g., `sunday` at `03:00`)
 - **On startup:** does **not** run on startup — training is expensive and
   shouldn't fire on every container restart. For one-off runs, invoke
   `run_classification_pipeline()` directly in a disposable container.
-- **Config (env):** `SCHEDULE_CLASSIFY_DAY`, `SCHEDULE_CLASSIFY_AT`,
+- **Config (env):** `SCHEDULE_REGRESSION_DAY`, `SCHEDULE_REGRESSION_AT`,
   plus whatever the pipeline itself reads (DB connection, MLflow URI when
   added)
 - **Writes to:** MLflow model registry (once MLflow is integrated)
