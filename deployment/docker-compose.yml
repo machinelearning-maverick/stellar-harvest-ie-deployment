@@ -158,6 +158,10 @@ services:
         condition: service_completed_successfully
     secrets:
       - env
+    environment:
+      SCHEDULE_REGRESSION_DAY: ${SCHEDULE_REGRESSION_DAY}
+      SCHEDULE_REGRESSION_AT: ${SCHEDULE_REGRESSION_AT}
+      SWPC_REGRESSION_N_FORECAST_STEPS: ${SWPC_REGRESSION_N_FORECAST_STEPS}
     restart: unless-stopped
 
   ui:
